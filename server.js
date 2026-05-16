@@ -54,11 +54,30 @@ app.post('/create-checkout', async (req, res) => {
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items,
-      success_url: 'https://i2crvf-sh.myshopify.com/pages/merci',
-      cancel_url: 'https://i2crvf-sh.myshopify.com/cart',
-    });
+  mode: 'payment',
+  line_items,
+  shipping_address_collection: {
+    allowed_countries: [
+      // Europe
+      'AD','AL','AT','BA','BE','BG','CH','CY','CZ','DE','DK','EE','ES',
+      'FI','FO','FR','GB','GI','GR','HR','HU','IE','IS','IT','LI','LT',
+      'LU','LV','MC','MD','ME','MK','MT','NL','NO','PL','PT','RO','RS',
+      'SE','SI','SK','SM','UA','VA',
+      // Amérique du Nord
+      'US','CA','MX',
+      // Océanie
+      'AU','NZ',
+      // Asie (grands marchés)
+      'JP','KR','SG','HK','TW'
+    ],
+  },
+  phone_number_collection: {
+    enabled: true,
+  },
+  billing_address_collection: 'required',
+  success_url: 'https://i2crvf-sh.myshopify.com/pages/merci',
+  cancel_url: 'https://i2crvf-sh.myshopify.com/cart',
+});
 
     res.json({ url: session.url });
 
